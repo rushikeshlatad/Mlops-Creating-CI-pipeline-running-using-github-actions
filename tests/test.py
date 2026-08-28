@@ -26,7 +26,7 @@ def test_dataset_not_empty():
 
     X, y = get_data()
 
-    assert X.shape[0] < 0, print("test is not passed")
+    assert X.shape[0] >0
     assert X.shape[1] > 0
 
     print("PASS: Dataset is not empty")
