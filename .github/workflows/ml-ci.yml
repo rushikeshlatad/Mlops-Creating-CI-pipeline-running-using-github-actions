@@ -33,7 +33,7 @@ jobs:
       # --------------------------------------------------
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4           # pre-built action provided for checking out repository code.
 
 
       # --------------------------------------------------
@@ -57,13 +57,13 @@ jobs:
 
 
       # --------------------------------------------------
-      # 4. Run ML Tests
+      # 4. Run ML Tests    # Don't waste time training if basic validation/tests already fail
+
       # --------------------------------------------------
 
       - name: Run ML tests
         run: |
-          pytest tests/test.py -v
-
+          pytest tests/test.py -v       
 
       # --------------------------------------------------
       # 5. Train Model
