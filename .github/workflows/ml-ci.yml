@@ -1,0 +1,95 @@
+name: ML CI Pipeline
+
+# --------------------------------------------------
+# WHEN SHOULD THE PIPELINE RUN?
+# --------------------------------------------------
+
+"on":
+
+  # Run whenever code is pushed
+  push:
+
+  # Run whenever a Pull Request is created/updated
+  pull_request:
+
+  # Allow developer to manually run the pipeline
+  workflow_dispatch:
+
+
+# --------------------------------------------------
+# JOBS
+# --------------------------------------------------
+
+jobs:
+
+  ml-validation:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # --------------------------------------------------
+      # 1. Get Repository Code
+      # --------------------------------------------------
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+      # --------------------------------------------------
+      # 2. Setup Python
+      # --------------------------------------------------
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+
+      # --------------------------------------------------
+      # 3. Install Dependencies
+      # --------------------------------------------------
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+
+      # --------------------------------------------------
+      # 4. Run ML Tests
+      # --------------------------------------------------
+
+      - name: Run ML tests
+        run: |
+          pytest tests/test.py -v
+
+
+      # --------------------------------------------------
+      # 5. Train Model
+      # --------------------------------------------------
+
+      - name: Train model
+        run: |
+          python src/train.py
+
+
+      # --------------------------------------------------
+      # 6. Check Model Artifact
+      # --------------------------------------------------
+
+      - name: Verify model artifact
+        run: |
+          test -f model.joblib
+          echo "Model artifact exists"
+
+
+      # --------------------------------------------------
+      # 7. Upload Model Artifact
+      # --------------------------------------------------
+
+      - name: Upload trained model
+        uses: actions/upload-artifact@v4
+        with:
+          name: random-forest-model
+          path: model.joblib
